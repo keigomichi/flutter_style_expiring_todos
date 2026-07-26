@@ -25,10 +25,11 @@ Iterable<File> dartFilesUnder(Directory directory) sync* {
   }
 }
 
-/// Resolves [path] against [root], preserving absolute paths.
+/// Resolves [path] against [root] and normalizes its dot segments.
 String resolvePath(Directory root, String path) {
-  if (File(path).isAbsolute) return File(path).absolute.path;
-  return File.fromUri(root.uri.resolveUri(Uri.file(path))).absolute.path;
+  final uri = Uri.file(path);
+  final resolved = uri.isAbsolute ? uri : root.uri.resolveUri(uri);
+  return resolved.normalizePath().toFilePath();
 }
 
 /// Returns a CLI-friendly path relative to [root] when possible.

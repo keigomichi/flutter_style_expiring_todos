@@ -69,6 +69,15 @@ void main() {
 
       expect(resolvePath(temporaryDirectory, absolutePath), absolutePath);
     });
+
+    test('normalizes parent segments in an absolute path', () {
+      final path = '${temporaryDirectory.path}/lib/../lib/main.dart';
+
+      expect(
+        resolvePath(temporaryDirectory, path),
+        File('${temporaryDirectory.path}/lib/main.dart').absolute.path,
+      );
+    });
   });
 
   group('displayPath', () {
