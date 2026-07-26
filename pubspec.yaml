@@ -3,7 +3,7 @@ description: >-
   An analyzer plugin that enforces Flutter-style TODO comments with optional
   expiry conditions (// TODO(username)[condition]: message) and reports TODOs
   whose conditions are met.
-version: 0.1.0
+version: 0.1.1
 executables:
   flutter_style_expiring_todos_cli:
 repository: https://github.com/keigomichi/flutter_style_expiring_todos
