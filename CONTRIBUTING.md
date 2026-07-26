@@ -30,10 +30,32 @@ integration tests, so analysis is scoped to `lib` and `test`.
 
 Keep user-facing documentation in [README.md](README.md) up to date.
 
+## Pull request titles
+
+Pull request titles follow the Conventional Commits format because squash
+merges become the commit history used by Release Please:
+
+```text
+<type>[optional scope][!]: <description>
+```
+
+Use one of these types:
+
+- `feat` for a new user-facing feature.
+- `fix` for a user-facing bug fix.
+- `perf` for a user-facing performance improvement.
+- `revert` for reverting a prior change.
+- `build`, `chore`, `ci`, `docs`, `refactor`, `style`, or `test` for changes
+  that do not need their own release note.
+
+Add `!` before the colon, or a `BREAKING CHANGE:` footer, for a breaking
+change. Scopes are optional.
+
 ## Release validation
 
-Before publishing, also verify that the package works with the lowest allowed
-dependencies:
+CI verifies every pull request with both the lowest and latest allowed
+dependencies. It also runs a publish dry run. To perform the same release
+validation locally:
 
 ```sh
 dart pub downgrade
@@ -42,6 +64,16 @@ dart test
 dart pub upgrade
 dart pub publish --dry-run
 ```
+
+Do not update the top-level `version` in `pubspec.yaml` or released sections in
+`CHANGELOG.md` as part of a normal pull request. Release Please owns those
+changes and keeps the release manifest in sync.
+
+After releasable changes reach `main`, Release Please creates or updates a
+release pull request. Merging that pull request creates the version tag and
+GitHub Release. The tag then publishes the same version to pub.dev through
+GitHub Actions using OIDC. Do not run `dart pub publish` manually for later
+versions.
 
 ## Official compatibility suite
 
