@@ -90,7 +90,12 @@ version: 1.0.0
     final output = StringBuffer();
 
     final code = await _runCommand(
-      const ['lib', 'lib/main.dart', 'test/main_test.dart'],
+      [
+        'lib',
+        'lib/main.dart',
+        '${temporaryDirectory.path}/lib/../lib/main.dart',
+        'test/main_test.dart',
+      ],
       workingDirectory: temporaryDirectory,
       now: DateTime(2026, 7, 23),
       out: output,
