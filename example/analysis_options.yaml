@@ -1,0 +1,12 @@
+# The example depends on the plugin by path so the code you're reading and
+# the plugin's source stay in sync. In your own project, replace this with a
+# published version, e.g. `flutter_style_expiring_todos: 0.1.0`.
+plugins:
+  flutter_style_expiring_todos:
+    path: ../
+
+# The official `flutter_style_todos` lint rejects the extended `[condition]`
+# form, so it conflicts with this plugin and must be disabled.
+linter:
+  rules:
+    flutter_style_todos: false

@@ -1,0 +1,10 @@
+# macOS metadata.
+.DS_Store
+
+# Dart tool and build output.
+.dart_tool/
+build/
+pubspec.lock
+
+# Generated API documentation.
+doc/api/

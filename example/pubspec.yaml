@@ -1,0 +1,9 @@
+name: flutter_style_expiring_todos_example
+description: >-
+  A minimal Dart app showing the TODO forms accepted by
+  flutter_style_expiring_todos.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.11.0

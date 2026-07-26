@@ -1,0 +1,5 @@
+plugins:
+  flutter_style_expiring_todos:
+    path: ../..
+    diagnostics:
+      expired_todo: false

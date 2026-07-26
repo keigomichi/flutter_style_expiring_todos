@@ -1,0 +1,6 @@
+name: fixture
+description: Integration-test and manual-check fixture for the flutter_style_expiring_todos plugin.
+publish_to: none
+version: 1.2.3
+environment:
+  sdk: ^3.11.0
