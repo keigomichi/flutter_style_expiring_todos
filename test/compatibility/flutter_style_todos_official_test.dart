@@ -15,11 +15,11 @@
 // contains no such cases, so every test below is expected to match
 // verbatim.
 
-import 'package:analyzer/src/diagnostic/diagnostic.dart'
-    as diag; // ignore: implementation_imports
 import 'package:analyzer_testing/analysis_rule/analysis_rule.dart';
 import 'package:flutter_style_expiring_todos/src/rules/flutter_style_expiring_todos.dart';
 import 'package:test_reflective_loader/test_reflective_loader.dart';
+
+import '../support/diagnostics.dart' as diagnostics;
 
 void main() {
   defineReflectiveSuite(() {
@@ -28,7 +28,7 @@ void main() {
 }
 
 @reflectiveTest
-class FlutterStyleTodosOfficialTest extends AnalysisRuleTest {
+class FlutterStyleTodosOfficialTest extends diagnostics.AnalysisRuleTestWithoutTodo {
   @override
   void setUp() {
     rule = FlutterStyleExpiringTodos();
@@ -55,17 +55,17 @@ class FlutterStyleTodosOfficialTest extends AnalysisRuleTest {
 ''',
       [
         lint(0, 17),
-        error(diag.todo, 3, 14),
+        error(diagnostics.todo, 3, 14),
         lint(18, 17),
         lint(36, 17),
         lint(54, 27),
-        error(diag.todo, 57, 24),
+        error(diagnostics.todo, 57, 24),
         lint(82, 18),
-        error(diag.todo, 85, 15),
+        error(diagnostics.todo, 85, 15),
         lint(101, 28),
         lint(130, 28),
         lint(159, 28),
-        error(diag.todo, 191, 53),
+        error(diagnostics.todo, 191, 53),
         lint(245, 64),
       ],
     );
@@ -74,14 +74,14 @@ class FlutterStyleTodosOfficialTest extends AnalysisRuleTest {
   test_badUsername_comma() async {
     await assertDiagnostics(r'// TODO(user1,user2): bla', [
       lint(0, 25),
-      error(diag.todo, 3, 22),
+      error(diagnostics.todo, 3, 22),
     ]);
   }
 
   test_badUsername_extraSymbols() async {
     await assertDiagnostics(r'// TODO(#12357): bla', [
       lint(0, 20),
-      error(diag.todo, 3, 17),
+      error(diagnostics.todo, 3, 17),
     ]);
   }
 
@@ -92,36 +92,36 @@ class FlutterStyleTodosOfficialTest extends AnalysisRuleTest {
 /// final todo = Todo(name: 'test todo', description: 'todo description');
 /// Something interesting. TODO(someone): this is an ugly test case.
 ''',
-      [error(diag.todo, 11, 15), error(diag.todo, 129, 41)],
+      [error(diagnostics.todo, 11, 15), error(diagnostics.todo, 129, 41)],
     );
   }
 
   test_docComment() async {
     await assertDiagnostics(r'/// TODO(user): bla', [
       lint(0, 19),
-      error(diag.todo, 4, 15),
+      error(diagnostics.todo, 4, 15),
     ]);
   }
 
   test_extraColon() async {
     await assertDiagnostics(r'// TODO:(user): bla', [
       lint(0, 19),
-      error(diag.todo, 3, 16),
+      error(diagnostics.todo, 3, 16),
     ]);
   }
 
   test_justTodo() async {
-    await assertDiagnostics(r'// TODO', [lint(0, 7), error(diag.todo, 3, 4)]);
+    await assertDiagnostics(r'// TODO', [lint(0, 7), error(diagnostics.todo, 3, 4)]);
   }
 
   test_justTodo_noLeadingSpace() async {
-    await assertDiagnostics(r'//TODO', [lint(0, 6), error(diag.todo, 2, 4)]);
+    await assertDiagnostics(r'//TODO', [lint(0, 6), error(diagnostics.todo, 2, 4)]);
   }
 
   test_missingColon() async {
     await assertDiagnostics(r'// TODO(user) bla', [
       lint(0, 17),
-      error(diag.todo, 3, 14),
+      error(diagnostics.todo, 3, 14),
     ]);
   }
 
@@ -133,9 +133,9 @@ class FlutterStyleTodosOfficialTest extends AnalysisRuleTest {
 ''',
       [
         lint(0, 17),
-        error(diag.todo, 2, 15),
+        error(diagnostics.todo, 2, 15),
         lint(18, 18),
-        error(diag.todo, 21, 15),
+        error(diagnostics.todo, 21, 15),
       ],
     );
   }
@@ -143,7 +143,7 @@ class FlutterStyleTodosOfficialTest extends AnalysisRuleTest {
   test_missingParens() async {
     await assertDiagnostics(r'// TODO: bla', [
       lint(0, 12),
-      error(diag.todo, 3, 9),
+      error(diagnostics.todo, 3, 9),
     ]);
   }
 
@@ -152,19 +152,19 @@ class FlutterStyleTodosOfficialTest extends AnalysisRuleTest {
       r'''
 // TODO(somebody): something
 ''',
-      [error(diag.todo, 3, 25)],
+      [error(diagnostics.todo, 3, 25)],
     );
   }
 
   test_properFormat_dottedUsername() async {
     await assertDiagnostics(r'// TODO(user.name): bla', [
-      error(diag.todo, 3, 20),
+      error(diagnostics.todo, 3, 20),
     ]);
   }
 
   test_properFormat_hyphenatedUsername() async {
     await assertDiagnostics(r'// TODO(user-name): bla', [
-      error(diag.todo, 3, 20),
+      error(diagnostics.todo, 3, 20),
     ]);
   }
 
@@ -173,7 +173,7 @@ class FlutterStyleTodosOfficialTest extends AnalysisRuleTest {
       r'''
 // // TODO(somebody): something
 ''',
-      [error(diag.todo, 6, 25)],
+      [error(diagnostics.todo, 6, 25)],
     );
   }
 
@@ -182,13 +182,13 @@ class FlutterStyleTodosOfficialTest extends AnalysisRuleTest {
       r'''
 //TODO(somebody): something
 ''',
-      [error(diag.todo, 2, 25)],
+      [error(diagnostics.todo, 2, 25)],
     );
   }
 
   test_properFormat_simpleUsername() async {
     await assertDiagnostics(r'// TODO(username): bla', [
-      error(diag.todo, 3, 19),
+      error(diagnostics.todo, 3, 19),
     ]);
   }
 
@@ -197,22 +197,22 @@ class FlutterStyleTodosOfficialTest extends AnalysisRuleTest {
       r'''
 // TODO(somebody): something, https://github.com/flutter/flutter
 ''',
-      [error(diag.todo, 3, 61)],
+      [error(diagnostics.todo, 3, 61)],
     );
   }
 
   test_slashStar() async {
-    await assertDiagnostics(r'/* TODO bla */', [error(diag.todo, 3, 8)]);
+    await assertDiagnostics(r'/* TODO bla */', [error(diagnostics.todo, 3, 8)]);
   }
 
   test_slashStarStar() async {
-    await assertDiagnostics(r'/** TODO bla **/', [error(diag.todo, 4, 10)]);
+    await assertDiagnostics(r'/** TODO bla **/', [error(diagnostics.todo, 4, 10)]);
   }
 
   test_spaceBeforeColon() async {
     await assertDiagnostics(r'// TODO(user) : bla', [
       lint(0, 19),
-      error(diag.todo, 3, 16),
+      error(diagnostics.todo, 3, 16),
     ]);
   }
 }

@@ -1,11 +1,11 @@
 // Reflective test methods follow the SDK linter test naming style.
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:analyzer/src/diagnostic/diagnostic.dart'
-    as diag; // ignore: implementation_imports
 import 'package:analyzer_testing/analysis_rule/analysis_rule.dart';
 import 'package:flutter_style_expiring_todos/src/rules/unresolved_todo_condition.dart';
 import 'package:test_reflective_loader/test_reflective_loader.dart';
+
+import '../support/diagnostics.dart' as diagnostics;
 
 void main() {
   defineReflectiveSuite(() {
@@ -14,7 +14,7 @@ void main() {
 }
 
 @reflectiveTest
-class UnresolvedTodoConditionTest extends AnalysisRuleTest {
+class UnresolvedTodoConditionTest extends diagnostics.AnalysisRuleTestWithoutTodo {
   @override
   void setUp() {
     rule = UnresolvedTodoCondition();
@@ -55,7 +55,7 @@ class UnresolvedTodoConditionTest extends AnalysisRuleTest {
 ''',
       [
         lint(0, 36, messageContainsAll: ['missing@>=1.0.0', 'pubspec.lock']),
-        error(diag.todo, 3, 33),
+        error(diagnostics.todo, 3, 33),
       ],
     );
   }
@@ -68,7 +68,7 @@ class UnresolvedTodoConditionTest extends AnalysisRuleTest {
 ''',
       [
         lint(0, 28, messageContainsAll: ['>=1.0.0', 'version']),
-        error(diag.todo, 3, 25),
+        error(diagnostics.todo, 3, 25),
       ],
     );
   }
@@ -82,7 +82,7 @@ class UnresolvedTodoConditionTest extends AnalysisRuleTest {
 ''',
       [
         lint(0, 33, messageContainsAll: ['sdk@>=3.10.0']),
-        error(diag.todo, 3, 30),
+        error(diagnostics.todo, 3, 30),
       ],
     );
   }
@@ -95,7 +95,7 @@ class UnresolvedTodoConditionTest extends AnalysisRuleTest {
 ''',
       [
         lint(0, 37, messageContainsAll: ['flutter@>=3.38.0']),
-        error(diag.todo, 3, 34),
+        error(diagnostics.todo, 3, 34),
       ],
     );
   }
@@ -106,7 +106,7 @@ class UnresolvedTodoConditionTest extends AnalysisRuleTest {
       r'''
 // TODO(alice)[provider@>=6.0.0]: fix
 ''',
-      [error(diag.todo, 3, 34)],
+      [error(diagnostics.todo, 3, 34)],
     );
   }
 
@@ -117,7 +117,7 @@ class UnresolvedTodoConditionTest extends AnalysisRuleTest {
       r'''
 // TODO(alice)[2099/01/01]: fix
 ''',
-      [error(diag.todo, 3, 28)],
+      [error(diagnostics.todo, 3, 28)],
     );
   }
 }
