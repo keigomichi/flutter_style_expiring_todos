@@ -2,9 +2,7 @@ import 'package:analyzer/src/dart/error/todo_codes.dart'
     as analyzer_todo; // ignore: implementation_imports
 import 'package:analyzer_testing/analysis_rule/analysis_rule.dart';
 import 'package:analyzer_testing/src/analysis_rule/pub_package_resolution.dart'
-    show
-        ExpectedDiagnostic,
-        ExpectedError; // ignore: implementation_imports
+    show ExpectedDiagnostic, ExpectedError; // ignore: implementation_imports
 
 /// The analyzer's built-in diagnostic code for a standard TODO comment.
 ///

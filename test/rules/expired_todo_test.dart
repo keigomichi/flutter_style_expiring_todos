@@ -100,7 +100,8 @@ class ExpiredTodoTest extends diagnostics.AnalysisRuleTestWithoutTodo {
 }
 
 @reflectiveTest
-class ExpiredTodoDefaultClockTest extends diagnostics.AnalysisRuleTestWithoutTodo {
+class ExpiredTodoDefaultClockTest
+    extends diagnostics.AnalysisRuleTestWithoutTodo {
   @override
   void setUp() {
     rule = ExpiredTodo();

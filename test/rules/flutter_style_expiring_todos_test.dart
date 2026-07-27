@@ -14,7 +14,8 @@ void main() {
 }
 
 @reflectiveTest
-class FlutterStyleExpiringTodosTest extends diagnostics.AnalysisRuleTestWithoutTodo {
+class FlutterStyleExpiringTodosTest
+    extends diagnostics.AnalysisRuleTestWithoutTodo {
   @override
   void setUp() {
     rule = FlutterStyleExpiringTodos();

@@ -14,7 +14,8 @@ void main() {
 }
 
 @reflectiveTest
-class UnresolvedTodoConditionTest extends diagnostics.AnalysisRuleTestWithoutTodo {
+class UnresolvedTodoConditionTest
+    extends diagnostics.AnalysisRuleTestWithoutTodo {
   @override
   void setUp() {
     rule = UnresolvedTodoCondition();

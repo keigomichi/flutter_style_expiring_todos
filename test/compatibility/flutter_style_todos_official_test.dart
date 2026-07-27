@@ -28,7 +28,8 @@ void main() {
 }
 
 @reflectiveTest
-class FlutterStyleTodosOfficialTest extends diagnostics.AnalysisRuleTestWithoutTodo {
+class FlutterStyleTodosOfficialTest
+    extends diagnostics.AnalysisRuleTestWithoutTodo {
   @override
   void setUp() {
     rule = FlutterStyleExpiringTodos();
@@ -111,11 +112,17 @@ class FlutterStyleTodosOfficialTest extends diagnostics.AnalysisRuleTestWithoutT
   }
 
   test_justTodo() async {
-    await assertDiagnostics(r'// TODO', [lint(0, 7), error(diagnostics.todo, 3, 4)]);
+    await assertDiagnostics(r'// TODO', [
+      lint(0, 7),
+      error(diagnostics.todo, 3, 4),
+    ]);
   }
 
   test_justTodo_noLeadingSpace() async {
-    await assertDiagnostics(r'//TODO', [lint(0, 6), error(diagnostics.todo, 2, 4)]);
+    await assertDiagnostics(r'//TODO', [
+      lint(0, 6),
+      error(diagnostics.todo, 2, 4),
+    ]);
   }
 
   test_missingColon() async {
@@ -206,7 +213,9 @@ class FlutterStyleTodosOfficialTest extends diagnostics.AnalysisRuleTestWithoutT
   }
 
   test_slashStarStar() async {
-    await assertDiagnostics(r'/** TODO bla **/', [error(diagnostics.todo, 4, 10)]);
+    await assertDiagnostics(r'/** TODO bla **/', [
+      error(diagnostics.todo, 4, 10),
+    ]);
   }
 
   test_spaceBeforeColon() async {
