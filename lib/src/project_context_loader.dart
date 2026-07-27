@@ -27,16 +27,16 @@ class ProjectContextLoader {
 
   /// Loads the context for the package rooted at [packageRoot].
   ProjectContext? loadForPackage(Folder packageRoot) {
-    var yaml = packageRoot.getFile('pubspec.yaml');
-    if (!yaml.exists) return null;
+    var yaml = packageRoot.getChild('pubspec.yaml');
+    if (yaml is! File || !yaml.exists) return null;
     return _load(yaml);
   }
 
   File? _findPubspec(Folder start) {
     Folder folder = start;
     while (true) {
-      var candidate = folder.getFile('pubspec.yaml');
-      if (candidate.exists) return candidate;
+      var candidate = folder.getChild('pubspec.yaml');
+      if (candidate is File && candidate.exists) return candidate;
       var parent = folder.parent;
       if (parent.path == folder.path) return null; // filesystem root
       folder = parent;
@@ -44,8 +44,11 @@ class ProjectContextLoader {
   }
 
   ProjectContext? _load(File yamlFile) {
-    var lockFile = yamlFile.parent.getFile('pubspec.lock');
-    var lockStamp = lockFile.exists ? lockFile.modificationStamp : -1;
+    var lockResource = yamlFile.parent.getChild('pubspec.lock');
+    var lockFile = lockResource is File ? lockResource : null;
+    var lockStamp = lockFile != null && lockFile.exists
+        ? lockFile.modificationStamp
+        : -1;
     var key = '${yamlFile.path}|${yamlFile.modificationStamp}|$lockStamp';
     if (_cache.containsKey(key)) return _cache[key];
     var context = _build(yamlFile, lockFile);
@@ -53,7 +56,7 @@ class ProjectContextLoader {
     return context;
   }
 
-  ProjectContext? _build(File yamlFile, File lockFile) {
+  ProjectContext? _build(File yamlFile, File? lockFile) {
     Object? yamlDoc;
     try {
       yamlDoc = loadYaml(yamlFile.readAsStringSync());
@@ -72,7 +75,7 @@ class ProjectContextLoader {
     }
 
     var locked = <String, Version>{};
-    if (lockFile.exists) {
+    if (lockFile != null && lockFile.exists) {
       Object? lockDoc;
       try {
         lockDoc = loadYaml(lockFile.readAsStringSync());

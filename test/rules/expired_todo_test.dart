@@ -1,11 +1,11 @@
 // Reflective test methods follow the SDK linter test naming style.
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:analyzer/src/diagnostic/diagnostic.dart'
-    as diag; // ignore: implementation_imports
 import 'package:analyzer_testing/analysis_rule/analysis_rule.dart';
 import 'package:flutter_style_expiring_todos/src/rules/expired_todo.dart';
 import 'package:test_reflective_loader/test_reflective_loader.dart';
+
+import '../support/diagnostics.dart' as diagnostics;
 
 void main() {
   defineReflectiveSuite(() {
@@ -16,7 +16,7 @@ void main() {
 }
 
 @reflectiveTest
-class ExpiredTodoTest extends AnalysisRuleTest {
+class ExpiredTodoTest extends diagnostics.AnalysisRuleTestWithoutTodo {
   @override
   void setUp() {
     rule = ExpiredTodo(now: () => DateTime(2026, 7, 21));
@@ -30,7 +30,7 @@ class ExpiredTodoTest extends AnalysisRuleTest {
 ''',
       [
         lint(0, 31, messageContainsAll: ['2026/07/20']),
-        error(diag.todo, 3, 28),
+        error(diagnostics.todo, 3, 28),
       ],
     );
   }
@@ -40,7 +40,7 @@ class ExpiredTodoTest extends AnalysisRuleTest {
       r'''
 // TODO(alice)[2026/07/21]: fix
 ''',
-      [error(diag.todo, 3, 28)],
+      [error(diagnostics.todo, 3, 28)],
     );
   }
 
@@ -49,7 +49,7 @@ class ExpiredTodoTest extends AnalysisRuleTest {
       r'''
 // TODO(alice)[2026/07/22]: fix
 ''',
-      [error(diag.todo, 3, 28)],
+      [error(diagnostics.todo, 3, 28)],
     );
   }
 
@@ -58,7 +58,7 @@ class ExpiredTodoTest extends AnalysisRuleTest {
       r'''
 // TODO(alice): fix
 ''',
-      [error(diag.todo, 3, 16)],
+      [error(diagnostics.todo, 3, 16)],
     );
   }
 
@@ -67,7 +67,7 @@ class ExpiredTodoTest extends AnalysisRuleTest {
       r'''
 // TODO: fix
 ''',
-      [error(diag.todo, 3, 9)],
+      [error(diagnostics.todo, 3, 9)],
     );
   }
 
@@ -76,7 +76,7 @@ class ExpiredTodoTest extends AnalysisRuleTest {
       r'''
 // TODO(alice)[2026/02/30]: fix
 ''',
-      [error(diag.todo, 3, 28)],
+      [error(diagnostics.todo, 3, 28)],
     );
   }
 
@@ -85,7 +85,7 @@ class ExpiredTodoTest extends AnalysisRuleTest {
       r'''
 /* TODO(alice)[2020/01/01]: fix */
 ''',
-      [lint(0, 34), error(diag.todo, 3, 28)],
+      [lint(0, 34), error(diagnostics.todo, 3, 28)],
     );
   }
 
@@ -94,13 +94,14 @@ class ExpiredTodoTest extends AnalysisRuleTest {
       r'''
 /// TODO(alice)[2026/07/20]: fix
 ''',
-      [error(diag.todo, 4, 28)],
+      [error(diagnostics.todo, 4, 28)],
     );
   }
 }
 
 @reflectiveTest
-class ExpiredTodoDefaultClockTest extends AnalysisRuleTest {
+class ExpiredTodoDefaultClockTest
+    extends diagnostics.AnalysisRuleTestWithoutTodo {
   @override
   void setUp() {
     rule = ExpiredTodo();
@@ -112,13 +113,13 @@ class ExpiredTodoDefaultClockTest extends AnalysisRuleTest {
       r'''
 // TODO(alice)[2000/01/01]: ancient
 ''',
-      [lint(0, 35), error(diag.todo, 3, 32)],
+      [lint(0, 35), error(diagnostics.todo, 3, 32)],
     );
   }
 }
 
 @reflectiveTest
-class ExpiredTodoVersionTest extends AnalysisRuleTest {
+class ExpiredTodoVersionTest extends diagnostics.AnalysisRuleTestWithoutTodo {
   @override
   void setUp() {
     rule = ExpiredTodo(now: () => DateTime(2026, 7, 21));
@@ -166,7 +167,7 @@ class ExpiredTodoVersionTest extends AnalysisRuleTest {
           name: 'expired_todo_version',
           messageContainsAll: ['>=1.0.0', '1.2.3'],
         ),
-        error(diag.todo, 3, 25),
+        error(diagnostics.todo, 3, 25),
       ],
     );
   }
@@ -177,7 +178,7 @@ class ExpiredTodoVersionTest extends AnalysisRuleTest {
       r'''
 // TODO(alice)[>=1.0.0]: fix
 ''',
-      [error(diag.todo, 3, 25)],
+      [error(diagnostics.todo, 3, 25)],
     );
   }
 
@@ -188,7 +189,7 @@ class ExpiredTodoVersionTest extends AnalysisRuleTest {
       r'''
 // TODO(alice)[>1.0.0]: fix
 ''',
-      [error(diag.todo, 3, 24)],
+      [error(diagnostics.todo, 3, 24)],
     );
   }
 
@@ -205,7 +206,7 @@ class ExpiredTodoVersionTest extends AnalysisRuleTest {
           name: 'expired_todo_version',
           messageContainsAll: ['provider@>=6.0.0', '6.1.2'],
         ),
-        error(diag.todo, 3, 34),
+        error(diagnostics.todo, 3, 34),
       ],
     );
   }
@@ -216,7 +217,7 @@ class ExpiredTodoVersionTest extends AnalysisRuleTest {
       r'''
 // TODO(alice)[provider@>=6.0.0]: fix
 ''',
-      [error(diag.todo, 3, 34)],
+      [error(diagnostics.todo, 3, 34)],
     );
   }
 
@@ -228,7 +229,7 @@ class ExpiredTodoVersionTest extends AnalysisRuleTest {
       r'''
 // TODO(alice)[missing@>=1.0.0]: fix
 ''',
-      [error(diag.todo, 3, 33)],
+      [error(diagnostics.todo, 3, 33)],
     );
   }
 
@@ -245,7 +246,7 @@ class ExpiredTodoVersionTest extends AnalysisRuleTest {
           name: 'expired_todo_version',
           messageContainsAll: ['sdk@>=3.10.0'],
         ),
-        error(diag.todo, 3, 30),
+        error(diagnostics.todo, 3, 30),
       ],
     );
   }
@@ -256,7 +257,7 @@ class ExpiredTodoVersionTest extends AnalysisRuleTest {
       r'''
 // TODO(alice)[flutter@>=3.40.0]: fix
 ''',
-      [error(diag.todo, 3, 34)],
+      [error(diagnostics.todo, 3, 34)],
     );
   }
 
@@ -276,7 +277,7 @@ class ExpiredTodoVersionTest extends AnalysisRuleTest {
           name: 'expired_todo_version',
           messageContainsAll: ['provider@>=6.0.0'],
         ),
-        error(diag.todo, 3, 46),
+        error(diagnostics.todo, 3, 46),
       ],
     );
   }
@@ -289,7 +290,7 @@ class ExpiredTodoVersionTest extends AnalysisRuleTest {
 ''',
       [
         lint(0, 49, messageContainsAll: ['2020/01/01']),
-        error(diag.todo, 3, 46),
+        error(diagnostics.todo, 3, 46),
       ],
     );
   }
