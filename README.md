@@ -219,6 +219,21 @@ dart run :flutter_style_expiring_todos_cli check-expired-todos \
   --date 2026/07/23 lib
 ```
 
+By default, each finding includes only the source line containing the TODO.
+Use `--code-lines` to include more lines starting at the TODO, stopping at the
+end of the file when fewer lines remain:
+
+```sh
+dart run :flutter_style_expiring_todos_cli check-expired-todos \
+  --code-lines 3 lib
+```
+
+```text
+./lib/main.dart:12 // TODO(alice)[2026/07/20]: remove fallback
+    return legacyFallback();
+    }
+```
+
 Run the CLI without a command to list available commands, or show detailed
 help for the scanner command:
 

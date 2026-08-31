@@ -26,6 +26,12 @@ final class CheckExpiredTodosCommand extends Command<int> {
       valueHelp: 'YYYY/MM/DD',
       help: 'Evaluate date conditions on this date.',
     );
+    argParser.addOption(
+      'code-lines',
+      defaultsTo: '1',
+      valueHelp: 'count',
+      help: 'Number of source lines to print from each expired TODO.',
+    );
   }
 
   final Directory? _workingDirectory;
@@ -58,11 +64,19 @@ final class CheckExpiredTodosCommand extends Command<int> {
       _err.writeln('Expected YYYY/MM/DD.');
       return 2;
     }
+    final codeLinesArgument = argResults!['code-lines'] as String;
+    final codeLines = int.tryParse(codeLinesArgument);
+    if (codeLines == null || codeLines < 1) {
+      _err.writeln('Invalid code line count: $codeLinesArgument');
+      _err.writeln('Expected a positive integer.');
+      return 2;
+    }
 
     return _scan(
       argResults!.rest,
       workingDirectory: _workingDirectory,
       now: evaluationDate ?? _now,
+      codeLines: codeLines,
       out: _out,
       err: _err,
     );
@@ -73,6 +87,7 @@ int _scan(
   List<String> arguments, {
   Directory? workingDirectory,
   DateTime? now,
+  int codeLines = 1,
   required StringSink out,
   required StringSink err,
 }) {
@@ -105,17 +120,20 @@ int _scan(
 
     final files = filesByPath.values.toList()
       ..sort((a, b) => a.path.compareTo(b.path));
-    findings = scanExpiredTodos(files, today: now ?? DateTime.now());
+    findings = scanExpiredTodos(
+      files,
+      today: now ?? DateTime.now(),
+      excerptLineCount: codeLines,
+    );
   } on FileSystemException catch (error) {
     err.writeln(error.message);
     return 2;
   }
 
   for (final finding in findings) {
-    out.writeln(
-      '${displayPath(finding.path, root)}:${finding.line} '
-      '${finding.excerpt}',
-    );
+    final prefix = '${displayPath(finding.path, root)}:${finding.line} ';
+    final excerpt = finding.excerpt.replaceAll('\n', '\n    ');
+    out.writeln('$prefix$excerpt');
   }
   return findings.isEmpty ? 0 : 1;
 }
