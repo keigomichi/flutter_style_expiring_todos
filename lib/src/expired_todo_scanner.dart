@@ -1,6 +1,7 @@
 /// File-system scanner used by the command-line interface.
 library;
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:analyzer/dart/analysis/utilities.dart';
@@ -12,7 +13,7 @@ import 'expiry_condition.dart';
 import 'project_context_loader.dart';
 import 'todo_parser.dart';
 
-/// An expired TODO and the source line that contains it.
+/// An expired TODO and the source excerpt that starts on its line.
 final class ExpiredTodoFinding {
   const ExpiredTodoFinding({
     required this.path,
@@ -32,7 +33,15 @@ List<ExpiredTodoFinding> scanExpiredTodos(
   Iterable<File> files, {
   DateTime? today,
   ProjectContextLoader? loader,
+  int excerptLineCount = 1,
 }) {
+  if (excerptLineCount < 1) {
+    throw ArgumentError.value(
+      excerptLineCount,
+      'excerptLineCount',
+      'must be a positive integer',
+    );
+  }
   final currentDate = today ?? DateTime.now();
   final effectiveToday = DateTime(
     currentDate.year,
@@ -65,7 +74,7 @@ List<ExpiredTodoFinding> scanExpiredTodos(
             ExpiredTodoFinding(
               path: absoluteFile.path,
               line: location.lineNumber,
-              excerpt: _lineAt(content, location.lineNumber),
+              excerpt: _linesAt(content, location.lineNumber, excerptLineCount),
             ),
           );
         }
@@ -99,11 +108,11 @@ bool _isExpired(
   return false;
 }
 
-String _lineAt(String content, int lineNumber) {
-  final lines = content.split('\n');
-  final line = lines[lineNumber - 1];
-  final lineWithoutCarriageReturn = line.endsWith('\r')
-      ? line.substring(0, line.length - 1)
-      : line;
-  return lineWithoutCarriageReturn.trimLeft();
+String _linesAt(String content, int lineNumber, int lineCount) {
+  final lines = const LineSplitter().convert(content);
+  final end = (lineNumber - 1 + lineCount).clamp(0, lines.length);
+  return lines
+      .sublist(lineNumber - 1, end)
+      .map((line) => line.trimLeft())
+      .join('\n');
 }

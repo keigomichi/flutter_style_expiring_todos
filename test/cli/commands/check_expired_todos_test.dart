@@ -27,6 +27,7 @@ version: 1.0.0
     expect(command.name, 'check-expired-todos');
     expect(command.description, contains('expired TODO'));
     expect(command.argParser.options, contains('date'));
+    expect(command.argParser.options, contains('code-lines'));
   });
 
   test('prints findings and returns one', () async {
@@ -78,6 +79,31 @@ version: 1.0.0
     expect(code, 1);
   });
 
+  test('prints the requested number of source lines', () async {
+    File('${temporaryDirectory.path}/main.dart').writeAsStringSync('''
+// TODO(alice)[2020/01/01]: remove fallback
+void fallback() {
+  print('fallback');
+}
+''');
+    final output = StringBuffer();
+
+    final code = await _runCommand(
+      const ['--code-lines', '3'],
+      workingDirectory: temporaryDirectory,
+      now: DateTime(2026, 7, 23),
+      out: output,
+    );
+
+    expect(code, 1);
+    expect(
+      output.toString(),
+      './main.dart:1 // TODO(alice)[2020/01/01]: remove fallback\n'
+      '    void fallback() {\n'
+      "    print('fallback');\n",
+    );
+  });
+
   test('scans each supplied path once', () async {
     Directory('${temporaryDirectory.path}/lib').createSync();
     Directory('${temporaryDirectory.path}/test').createSync();
@@ -121,6 +147,20 @@ version: 1.0.0
     expect(code, 2);
     expect(errors.toString(), contains('Invalid date: 2026/02/30'));
     expect(errors.toString(), contains('Expected YYYY/MM/DD'));
+  });
+
+  test('rejects a non-positive code line count', () async {
+    final errors = StringBuffer();
+
+    final code = await _runCommand(
+      const ['--code-lines', '0'],
+      workingDirectory: temporaryDirectory,
+      err: errors,
+    );
+
+    expect(code, 2);
+    expect(errors.toString(), contains('Invalid code line count: 0'));
+    expect(errors.toString(), contains('Expected a positive integer'));
   });
 
   test('rejects a path that does not exist', () async {
